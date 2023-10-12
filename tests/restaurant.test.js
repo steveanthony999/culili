@@ -15,7 +15,13 @@ describe('Update Restaurant Endpoint', () => {
   beforeEach(async () => {
     restaurant = new Restaurant({
       name: 'Test Restaurant',
-      location: 'Test Location',
+      location: {
+        country: 'US',
+        address: '123 Main St',
+        city: 'Anytown',
+        stateOrProvinceOrCounty: 'CA',
+        zipOrPostcode: '12345',
+      },
       contact: '1234567890',
     });
     await restaurant.save();
