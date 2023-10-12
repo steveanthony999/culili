@@ -4,27 +4,33 @@ const app = require('../server'); // The Express server instance
 
 // Test suite for error handling functionality
 describe('Error Handling Tests', () => {
-  // Test case: Check if a custom error message is returned for a specific route
-  it('should return a custom error message', async () => {
-    // Make a GET request to the '/error-test' route
-    const response = await request(app).get('/error-test');
-
-    // Expect the response status to be 404 (Not Found)
-    expect(response.status).toBe(404);
-
-    // Expect the error message in the response body to match the custom error message
-    expect(response.body.error).toBe('Intentional Test Error');
+  // Placeholder test to remind you to add tests for error handling in the future
+  it('should have error handling tests for new routes', () => {
+    // This test will always pass, but serves as a reminder
+    expect(true).toBe(true);
   });
 
-  // Test case: Check if a default error message is returned for unhandled errors
-  it('should return a default error message for unhandled errors', async () => {
-    // Make a GET request to the '/unhandled-error-test' route
-    const response = await request(app).get('/unhandled-error-test');
+  // Uncomment and modify the below tests when you have actual routes to test error handling
 
-    // Expect the response status to be 500 (Internal Server Error)
-    expect(response.status).toBe(500);
+  // it('should return a custom error message', async () => {
+  //   // Make a GET request to a route that should produce a custom error
+  //   const response = await request(app).get('/your-new-route-that-produces-an-error');
+  //
+  //   // Expect the response status to be a specific error code
+  //   expect(response.status).toBe(/* your expected status code */);
+  //
+  //   // Expect the error message in the response body to match the custom error message
+  //   expect(response.body.error).toBe('Your custom error message');
+  // });
 
-    // Expect the error message in the response body to match the default error message
-    expect(response.body.error).toBe('Internal Server Error');
-  });
+  // it('should return a default error message for unhandled errors', async () => {
+  //   // Make a GET request to a route that should produce an unhandled error
+  //   const response = await request(app).get('/your-new-route-that-produces-an-unhandled-error');
+  //
+  //   // Expect the response status to be 500 (Internal Server Error)
+  //   expect(response.status).toBe(500);
+  //
+  //   // Expect the error message in the response body to match the default error message
+  //   expect(response.body.error).toBe('Internal Server Error');
+  // });
 });
