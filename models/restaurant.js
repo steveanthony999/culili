@@ -1,5 +1,9 @@
 const mongoose = require('mongoose');
 
+const { supportedCountries } = require('../config/countries');
+
+const countryCodes = supportedCountries.map((country) => country.code);
+
 const restaurantSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -7,10 +11,39 @@ const restaurantSchema = new mongoose.Schema({
     trim: true,
   },
   location: {
-    type: String,
-    required: true,
-    trim: true,
+    country: {
+      type: String,
+      required: true,
+      enum: countryCodes,
+    },
+    address: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    suiteOrUnit: {
+      type: String,
+      trim: true,
+    },
+    city: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    stateOrProvinceOrCounty: {
+      // Name can be changed based on preference
+      type: String,
+      required: true,
+      trim: true,
+    },
+    zipOrPostcode: {
+      // Name can be changed based on preference
+      type: String,
+      required: true,
+      trim: true,
+    },
   },
+
   contact: {
     type: String,
     trim: true,
