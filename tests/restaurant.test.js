@@ -43,7 +43,13 @@ describe('Delete Restaurant Endpoint', () => {
   beforeEach(async () => {
     restaurant = new Restaurant({
       name: 'Test Restaurant',
-      location: 'Test Location',
+      location: {
+        country: 'US',
+        address: '123 Main St',
+        city: 'Anytown',
+        stateOrProvinceOrCounty: 'CA',
+        zipOrPostcode: '12345',
+      },
       contact: '1234567890',
     });
     await restaurant.save();
@@ -84,7 +90,13 @@ describe('Edge Cases for Restaurant Endpoints', () => {
   it('should return 400 when updating a restaurant with invalid data', async () => {
     const restaurant = new Restaurant({
       name: 'Test Restaurant',
-      location: 'Test Location',
+      location: {
+        country: 'US',
+        address: '123 Main St',
+        city: 'Anytown',
+        stateOrProvinceOrCounty: 'CA',
+        zipOrPostcode: '12345',
+      },
       contact: '1234567890',
     });
     await restaurant.save();
