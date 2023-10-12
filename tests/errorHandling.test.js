@@ -1,5 +1,6 @@
 // Import necessary modules for testing
 const request = require('supertest'); // For making HTTP requests in tests
+const mongoose = require('mongoose');
 const app = require('../server'); // The Express server instance
 
 // Test suite for error handling functionality
@@ -33,4 +34,12 @@ describe('Error Handling Tests', () => {
   //   // Expect the error message in the response body to match the default error message
   //   expect(response.body.error).toBe('Internal Server Error');
   // });
+});
+
+// At the end of your test file
+afterAll(async () => {
+  // Close the server
+  app.close();
+  // Disconnect from the database
+  await mongoose.connection.close();
 });

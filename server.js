@@ -12,7 +12,7 @@ connectDB();
 // Initialize the Express application
 const app = express();
 
-const PORT = process.env.PORT || 5000;
+// const PORT = process.env.PORT || 5000;
 
 // Middlewares
 app.use(express.json());
@@ -33,7 +33,7 @@ app.use((err, req, res, next) => {
   });
 });
 
-app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
+// app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
 
 // Export the app instance for use in other files (e.g., start.js, tests)
 module.exports = app;
