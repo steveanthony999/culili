@@ -1,6 +1,8 @@
 const express = require('express');
+const cors = require('cors');
 const dotenv = require('dotenv');
 const routes = require('./routes/index');
+const userRoutes = require('./routes/userRoutes');
 const restaurantRoutes = require('./routes/restaurantRoutes');
 const connectDB = require('./config/db');
 
@@ -10,9 +12,11 @@ connectDB();
 
 const app = express();
 
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use('/', routes);
+app.use('/api/users', userRoutes);
 app.use('/api/restaurants', restaurantRoutes);
 
 app.use((err, req, res, next) => {
