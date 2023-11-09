@@ -30,6 +30,7 @@ jobs:
         run: npm test
         env:
           MONGO_URI: ${{ secrets.MONGO_URI }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
 
       - name: SSH and Deploy
         if: github.ref == 'refs/heads/main' && job.status == 'success'
