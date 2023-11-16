@@ -1,12 +1,12 @@
 const asyncHandler = require('express-async-handler');
-const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const resend = require('../utils/resend');
 
 const User = require('../models/userModel');
 
+// Register
 const register = asyncHandler(async (req, res) => {
-  const { firstName, lastName, email, password } = req.body;
+  const { firstName, lastName, email } = req.body;
 
   if (!firstName || !lastName || !email) {
     res.status(400);
@@ -20,17 +20,11 @@ const register = asyncHandler(async (req, res) => {
     throw new Error('User already exists');
   }
 
-  let hashedPassword;
-  if (password) {
-    const salt = await bcrypt.genSalt(10);
-    hashedPassword = await bcrypt.hash(password, salt);
-  }
-
   const user = await User.create({
     firstName,
     lastName,
     email,
-    password: hashedPassword,
+    numProjects,
   });
 
   if (user) {
@@ -41,6 +35,7 @@ const register = asyncHandler(async (req, res) => {
         firstName: user.firstName,
         lastName: user.lastName,
         email: user.email,
+        numProjects: user.numProjects,
         token: generateToken(user._id),
       });
     } catch (error) {
@@ -53,6 +48,7 @@ const register = asyncHandler(async (req, res) => {
   }
 });
 
+// Send Verification Email
 const sendVerificationEmail = asyncHandler(async (user, res) => {
   if (!user) {
     return res.status(400).json({ error: 'User not found' });
@@ -80,6 +76,7 @@ const sendVerificationEmail = asyncHandler(async (user, res) => {
   }
 });
 
+// Verify Email
 const verifyEmail = asyncHandler(async (req, res) => {
   const { token } = req.query;
 
@@ -105,18 +102,19 @@ const verifyEmail = asyncHandler(async (req, res) => {
   }
 });
 
+// Log In
 const login = asyncHandler(async (req, res) => {
-  const { email, password } = req.body;
+  const { email } = req.body;
+
   const user = await User.findOne({ email });
 
-  if (user && (await bcrypt.compare(password, user.password))) {
+  if (user) {
     res.status(200).json({
       _id: user._id,
       firstName: user.firstName,
       lastName: user.lastName,
-      username: user.username,
-      image: user.image,
       email: user.email,
+      numProjects: user.numProjects,
       token: generateToken(user._id),
     });
   } else {
@@ -125,6 +123,21 @@ const login = asyncHandler(async (req, res) => {
   }
 });
 
+// Get Current User
+const getCurrentUser = asyncHandler(async (req, res) => {
+  const user = {
+    _id: req.user._id,
+    email: req.user.email,
+    firstName: req.user.firstName,
+    lastName: req.user.lastName,
+    numProjects: req.user.numProjects,
+    isVerified: req.user.isVerified,
+  };
+
+  res.status(200).json(user);
+});
+
+// Generate Token
 const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
     expiresIn: '30d',
@@ -136,4 +149,5 @@ module.exports = {
   sendVerificationEmail,
   verifyEmail,
   login,
+  getCurrentUser,
 };

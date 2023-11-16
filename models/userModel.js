@@ -15,13 +15,17 @@ const userSchema = mongoose.Schema(
       required: [true, 'Please add an email'],
       unique: true,
     },
-    password: {
+    authProvider: {
       type: String,
     },
     isVerified: {
       type: Boolean,
       required: true,
       default: false,
+    },
+    numProjects: {
+      type: Number,
+      default: 0,
     },
   },
   {
