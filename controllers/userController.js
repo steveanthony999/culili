@@ -8,6 +8,8 @@ const User = require('../models/userModel');
 const register = asyncHandler(async (req, res) => {
   const { firstName, lastName, email } = req.body;
 
+  console.log(req.body)
+
   if (!firstName || !lastName || !email) {
     res.status(400);
     throw new Error('Please include all fields');
@@ -24,17 +26,17 @@ const register = asyncHandler(async (req, res) => {
     firstName,
     lastName,
     email,
-    numProjects,
   });
 
   if (user) {
     try {
-      await sendVerificationEmail(user);
+      sendVerificationEmail(user);
       res.status(201).json({
         _id: user._id,
         firstName: user.firstName,
         lastName: user.lastName,
         email: user.email,
+        isVerified: user.isVerified,
         numProjects: user.numProjects,
         token: generateToken(user._id),
       });
@@ -68,7 +70,7 @@ const sendVerificationEmail = asyncHandler(async (user, res) => {
       html: `
         <strong>Email Verification</strong>
         <p>Please click the link below to verify your email:</p>
-        <a href="http://localhost:5000/api/users/verify-email?token=${verificationToken}">Verify Email</a>
+        <a href="https://api.culili.com/api/users/verify-email?token=${verificationToken}">Verify Email</a>
       `,
     });
   } catch (error) {
@@ -95,7 +97,8 @@ const verifyEmail = asyncHandler(async (req, res) => {
     user.isVerified = true;
     await user.save();
 
-    res.redirect('http://localhost:5173/email-verified');
+    // res.redirect('http://localhost:5173/email-verified');
+    res.redirect('https://app.culili.com/email-verified');
   } catch (error) {
     console.error(error);
     res.status(400).json({ error: 'Invalid token' });
