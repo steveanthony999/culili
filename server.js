@@ -14,9 +14,9 @@ const app = express();
 
 const corsOptions = {
   origin: 'https://app.culili.com',
-  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  optionsSuccessStatus: 200,
   credentials: true,
-  allowedHeaders: 'Content-Type, Authorization, X-Requested-With'
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
 };
 
 app.use(cors(corsOptions));
