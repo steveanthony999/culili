@@ -15,6 +15,25 @@ const projectSchema = mongoose.Schema(
       type: String,
       required: [true, 'Please add a description'],
     },
+    repositoryUrl: {
+      type: String,
+      required: [true, 'Please add a repository URL'],
+    },
+    buildStatus: {
+      type: String,
+      enum: ['pending', 'success', 'error'],
+      default: 'pending',
+    },
+    deploymentLog: {
+      type: String,
+    },
+    projectDirectory: {
+      type: String,
+      required: [true, 'Project directory path is required'],
+    },
+    domain: {
+      type: String,
+    },
   },
   {
     timestamps: true,
