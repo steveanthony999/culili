@@ -12,14 +12,15 @@ connectDB();
 
 const app = express();
 
-const corsOptions = {
-  origin: 'https://app.culili.com',
-  optionsSuccessStatus: 200,
-  credentials: true,
-  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-};
+// const corsOptions = {
+//   origin: 'https://app.culili.com',
+//   optionsSuccessStatus: 200,
+//   credentials: true,
+//   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+// };
 
-app.use(cors(corsOptions));
+// app.use(cors(corsOptions));
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 // TODO:  Cleanup Routes

@@ -4,6 +4,10 @@ const resend = require('../utils/resend');
 
 const User = require('../models/userModel');
 
+const isProduction = process.env.NODE_ENV === 'production';
+const verifyEmailUrl = isProduction ? '<a href="https://api.culili.com/api/users/verify-email?token=${verificationToken}">Verify Email</a>' : '<a href="http://localhost:5001/api/users/verify-email?token=${verificationToken}">Verify Email</a>';
+const emailVerifiedUrl = isProduction ? 'https://app.culili.com/email-verified' : 'http://localhost:5173/email-verified';
+
 // Register
 const register = asyncHandler(async (req, res) => {
   const { firstName, lastName, email } = req.body;
@@ -70,7 +74,7 @@ const sendVerificationEmail = asyncHandler(async (user, res) => {
       html: `
         <strong>Email Verification</strong>
         <p>Please click the link below to verify your email:</p>
-        <a href="https://api.culili.com/api/users/verify-email?token=${verificationToken}">Verify Email</a>
+        ${verifyEmailUrl}
       `,
     });
   } catch (error) {
@@ -98,7 +102,7 @@ const verifyEmail = asyncHandler(async (req, res) => {
     await user.save();
 
     // res.redirect('http://localhost:5173/email-verified');
-    res.redirect('https://app.culili.com/email-verified');
+    res.redirect(emailVerifiedUrl);
   } catch (error) {
     console.error(error);
     res.status(400).json({ error: 'Invalid token' });
