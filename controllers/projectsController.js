@@ -1,5 +1,6 @@
 const asyncHandler = require('express-async-handler');
 const fs = require('fs').promises;
+const fsBase = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
 
@@ -9,6 +10,11 @@ const Project = require('../models/projectModel');
 const isValidGitUrl = (url) => {
   const gitUrlPattern = /^https?:\/\/(www\.)?github\.com\/[\w\-\.]+\/[\w\-\.]+\.git$/; // Adjust regex as needed
   return gitUrlPattern.test(url);
+};
+
+const sanitizeUrl = (url) => {
+  const sanitizedUrl = url.replace(/[^a-zA-Z0-9\-\/\:\.]+/g, '');
+  return sanitizedUrl;
 };
 
 // =============================================================================
@@ -43,8 +49,33 @@ const createProject = asyncHandler(async (req, res) => {
   try {
     await fs.mkdir(projectDirectory, { recursive: true });
 
-    const gitCloneCommand = `git clone ${repositoryUrl} ${projectDirectory}`;
+    const sanitizedUrl = sanitizeUrl(repositoryUrl);
+    if (!isValidGitUrl(sanitizedUrl)) {
+      res.status(400).json({ error: 'Invalid repository URL' });
+      return;
+    }
+
+    const gitCloneCommand = `git clone ${sanitizedUrl} ${projectDirectory}`;
     execSync(gitCloneCommand);
+
+    const packageJsonPath = path.join(projectDirectory, 'package.json');
+
+    if (fsBase.existsSync(packageJsonPath)) {
+      const packageJson = JSON.parse(await fs.readFile(packageJsonPath, 'utf8'));
+
+      if (packageJson.scripts && packageJson.scripts.build) {
+        const buildCommand = `cd ${projectDirectory} && npm install && npm run build`;
+        execSync(buildCommand);
+      } else {
+        console.error('Build script not found in package.json');
+        res.status(400).json({ error: 'Build script not found in package.json' });
+        return;
+      }
+    } else {
+      console.error('package.json not found');
+      res.status(400).json({ error: 'package.json not found in the cloned repository' });
+      return;
+    }
   } catch (error) {
     console.error('Error creating project directory:', error);
     res.status(500);
