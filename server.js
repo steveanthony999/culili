@@ -27,6 +27,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use('/', routes);
 app.use('/api/users', userRoutes);
 app.use('/api/projects', require('./routes/projectsRoutes'));
+app.use('/projects', express.static(path.join(__dirname, './utils/user_projects')));
 // DELETE
 app.use('/api/restaurants', restaurantRoutes);
 
